@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">BookListing</string>
+
+    <string name="search_hint">Search here...</string>
+    <string name="action_search">Search</string>
+
+    <string name="by">by</string>
+    <string name="published">published</string>
+    <string name="in">in</string>
+
+    <string name="welcome">Let\'s get start! Type the name of a book you wanna find on the search field!</string>
+    <string name="no_result">No result was found for current search</string>
+    <string name="internal_error">We\'re sorry. Something unexpected happened. Please try again later</string>
+    <string name="no_internet_connection">It\'s seem that you don\'t have internet connection. Connect it and try again.</string>
+</resources>
