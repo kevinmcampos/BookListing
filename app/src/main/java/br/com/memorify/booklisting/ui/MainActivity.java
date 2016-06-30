@@ -1,5 +1,8 @@
 package br.com.memorify.booklisting.ui;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -83,7 +86,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String searchText = searchEditText.getText().toString().trim();
                 if (!searchText.isEmpty()) {
-                    new SearchBooksTask(searchText).execute();
+                    if (isOnline()) {
+                        new SearchBooksTask(searchText).execute();
+                    } else {
+                        showMessage(R.string.no_internet_connection);
+                    }
                 }
             }
         });
@@ -94,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
         bookListView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         bookAdapter = new BookAdapter(books);
         bookListView.setAdapter(bookAdapter);
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public class SearchBooksTask extends AsyncTask<Void, Void, Void> {
@@ -196,10 +209,12 @@ public class MainActivity extends AppCompatActivity {
 
             JSONObject resultJson = new JSONObject(resultJsonStr);
             JSONArray items = resultJson.optJSONArray(BOOK_ITEM_LIST_KEY);
-            for (int i = 0; i < items.length(); i++) {
-                JSONObject bookInfo = items.getJSONObject(i);
-                Book book = Book.fromJSON(bookInfo.optJSONObject(BOOK_VOLUME_INFO_KEY));
-                books.add(book);
+            if ( items != null ){
+                for (int i = 0; i < items.length(); i++) {
+                    JSONObject bookInfo = items.getJSONObject(i);
+                    Book book = Book.fromJSON(bookInfo.optJSONObject(BOOK_VOLUME_INFO_KEY));
+                    books.add(book);
+                }
             }
             return books;
         }
